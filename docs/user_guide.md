@@ -1105,6 +1105,12 @@ is 1k a 1000 (default, `benchmark::Counter::OneK::kIs1000`), or 1024
 
   // This says that we process with the rate of state.range(0) bytes every iteration:
   state.counters["BytesProcessed"] = Counter(state.range(0), benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+
+  // Set the counter to display in scientific notation (e.g. 1.2345e-04):
+  state.counters["Error"] = Counter(absError, benchmark::Counter::kIsScientific);
+
+  // Scientific notation can also be combined with rates:
+  state.counters["ErrorRate"] = Counter(absError, benchmark::Counter::kIsScientific | benchmark::Counter::kIsRate);
 ```
 
 You can use `insert()` with `std::initializer_list`:

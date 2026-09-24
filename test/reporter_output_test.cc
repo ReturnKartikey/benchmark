@@ -1,5 +1,7 @@
 #undef NDEBUG
 
+#include <cstdint>
+
 #include "benchmark/benchmark_api.h"
 #include "benchmark/registration.h"
 #include "benchmark/state.h"
@@ -98,12 +100,16 @@ ADD_CASES(TC_CSVOut, {{"^\"BM_basic\",%csv_report$"}});
 // ========================================================================= //
 
 void BM_bytes_per_second(benchmark::State& state) {
+  std::uint64_t value = 0;
   for (auto _ : state) {
-    // This test requires a non-zero CPU time to avoid divide-by-zero
-    auto iterations = static_cast<double>(state.iterations()) *
-                      static_cast<double>(state.iterations());
-    benchmark::DoNotOptimize(iterations);
+    // Keep the workload large enough that Windows does not report zero CPU
+    // time, while preventing the compiler from removing it.
+    for (int i = 0; i < 16; ++i) {
+      value = value * 1664525u + 1013904223u;
+      benchmark::DoNotOptimize(value);
+    }
   }
+  benchmark::DoNotOptimize(value);
   state.SetBytesProcessed(1);
 }
 BENCHMARK(BM_bytes_per_second);
@@ -131,12 +137,16 @@ ADD_CASES(TC_CSVOut, {{"^\"BM_bytes_per_second\",%csv_bytes_report$"}});
 // ========================================================================= //
 
 void BM_items_per_second(benchmark::State& state) {
+  std::uint64_t value = 0;
   for (auto _ : state) {
-    // This test requires a non-zero CPU time to avoid divide-by-zero
-    auto iterations = static_cast<double>(state.iterations()) *
-                      static_cast<double>(state.iterations());
-    benchmark::DoNotOptimize(iterations);
+    // Keep the workload large enough that Windows does not report zero CPU
+    // time, while preventing the compiler from removing it.
+    for (int i = 0; i < 16; ++i) {
+      value = value * 1664525u + 1013904223u;
+      benchmark::DoNotOptimize(value);
+    }
   }
+  benchmark::DoNotOptimize(value);
   state.SetItemsProcessed(1);
 }
 BENCHMARK(BM_items_per_second);
